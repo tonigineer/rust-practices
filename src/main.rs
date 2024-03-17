@@ -1,13 +1,12 @@
-use bevy::prelude::*;
+use bevy::{diagnostic::FrameTimeDiagnosticsPlugin, prelude::*};
 
-mod environment;
-use environment::{EnvironmentPlugin, POOL_DEPTH, POOL_THICKNESS, POOL_WIDTH, PIXEL_PER_METER};
+mod renderer;
+mod spectator;
+mod world;
 
-const WINDOW_WIDTH: f32 = POOL_WIDTH*PIXEL_PER_METER + POOL_THICKNESS*PIXEL_PER_METER*2.0;
-const WINDOW_DEPTH: f32 = POOL_DEPTH*PIXEL_PER_METER + POOL_THICKNESS*PIXEL_PER_METER*2.0;
-
-mod balls;
-use balls::PhysicsPlugin;
+use renderer::RendererPlugin;
+use spectator::SpectatorPlugin;
+use world::{balls::BallPlugin, physics::PhysicsPlugin};
 
 fn main() {
     App::new()
@@ -17,17 +16,23 @@ fn main() {
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         transparent: true,
-                        title: "Test-3D".into(),
-                        resolution: (WINDOW_WIDTH, WINDOW_DEPTH).into(),
+                        title: "Ball physics".into(),
+                        resolution: (
+                            renderer::WINDOW_WIDTH_INIT,
+                            renderer::WINDOW_HEIGHT_INIT
+                        ).into(),
                         position: WindowPosition::Centered(MonitorSelection::Primary),
-                        resizable: false,
+                        resizable: true,
                         ..default()
                     }),
                     ..default()
                 })
                 .build(),
-            EnvironmentPlugin,
-            PhysicsPlugin
+            FrameTimeDiagnosticsPlugin,
+            BallPlugin,
+            PhysicsPlugin,
+            RendererPlugin,
+            SpectatorPlugin,
         ))
         .insert_resource(ClearColor(Color::NONE))
         .add_systems(Update, bevy::window::close_on_esc)

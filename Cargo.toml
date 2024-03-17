@@ -5,6 +5,8 @@ edition = "2021" # this needs to be 2021, or you need to set "resolver=2"
 
 [dependencies]
 bevy = { version = "0.13.0", features = ["dynamic_linking"] }
+itertools = "0.12.1"
+rand = "0.8.5"
 
 [workspace]
 resolver = "2" # Important! wgpu/Bevy needs this!
