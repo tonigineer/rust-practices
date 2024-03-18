@@ -8,10 +8,10 @@ use bevy::utils::Duration;
 
 use self::resources::{CurrentWindowSize, CurrentWorldSize, PixelPerMeter};
 
-pub const WINDOW_WIDTH_INIT : f32 = 1280.0;
-pub const WINDOW_HEIGHT_INIT: f32 = 720.0;
+pub const WINDOW_WIDTH_INIT : f32 = 600.0;
+pub const WINDOW_HEIGHT_INIT: f32 = 600.0;
 const PIXEL_PER_METER_DEFAULT: u32 = 300;
-const FPS: f32 = 100.0;
+pub const FPS: f32 = 100.0;
 
 pub struct RendererPlugin;
 
@@ -32,6 +32,8 @@ impl Plugin for RendererPlugin {
                         height: WINDOW_HEIGHT_INIT*PIXEL_PER_METER_DEFAULT as f32
                     }
             )
+            .insert_resource(
+                PixelPerMeter(PIXEL_PER_METER_DEFAULT as f32))
             .add_systems(Update, systems::update_window_size)
             .add_systems(Update,
                 systems::update_balls

@@ -1,5 +1,5 @@
 pub mod balls;
 pub mod physics;
 
-pub(crate) const BALL_SPAWN_X: f32 = 1280.0;
-pub(crate) const BALL_SPAWN_Y: f32 = 720.0;
+pub(crate) const BALL_SPAWN_DELAY: f32 = 0.05;
+pub(crate) const MAX_BALLS_SPAWNING: u32 = 1000;

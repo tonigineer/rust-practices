@@ -9,9 +9,6 @@ use bevy::utils::Duration;
 
 use self::resources::NumberSpawnedBalls;
 
-const BALL_SPAWN_DELAY: f32 = 0.05;
-pub const MAX_BALLS_SPAWNING: u32 = 500;
-
 pub struct BallPlugin;
 
 impl Plugin for BallPlugin {
@@ -21,7 +18,7 @@ impl Plugin for BallPlugin {
             .add_systems(
                 Update,
                 systems::spawn_ball
-                    .run_if(on_timer(Duration::from_secs_f32(BALL_SPAWN_DELAY)))
+                    .run_if(on_timer(Duration::from_secs_f32(super::BALL_SPAWN_DELAY)))
             );
     }
 

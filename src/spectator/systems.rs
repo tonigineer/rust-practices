@@ -3,7 +3,9 @@ use bevy::{
     prelude::*,
 };
 
-use super::components::MainCamera;
+use super::components::{MainCamera, TextHud};
+use crate::world::balls::resources::NumberSpawnedBalls;
+use crate::world::physics::resources::PhysicsInfo;
 
 pub(crate) fn spawn_camera(mut commands: Commands) {
     commands.spawn((
@@ -12,103 +14,65 @@ pub(crate) fn spawn_camera(mut commands: Commands) {
     ));
 }
 
-#[derive(Component)]
-pub(crate) struct TextFps;
-
-#[derive(Component)]
-pub(crate) struct TextBalls;
-
-
-pub(crate) fn show_text(mut commands: Commands, asset_server: Res<AssetServer>) {
-    // Text with one section
+pub(crate) fn show_text(mut commands: Commands) {
     commands.spawn((
-        // Create a TextBundle that has a Text with a single section.
         TextBundle::from_section(
-            // Accepts a `String` or any type that converts into a `String`, such as `&str`
-            "FPS: ",
+            "",
             TextStyle {
-                // This font is loaded and will be used instead of the default font.
-                // font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                 font_size: 20.0,
                 ..default()
             },
-        ) // Set the justification of the Text
-        .with_text_justify(JustifyText::Center)
-        // Set the style of the TextBundle itself.
+        )
+        .with_text_justify(JustifyText::Left)
         .with_style(Style {
             position_type: PositionType::Absolute,
             top: Val::Px(1.0),
             left: Val::Px(5.0),
             ..default()
         }),
-        TextFps,
-    ));
-
-    commands.spawn((
-        // Create a TextBundle that has a Text with a single section.
-        TextBundle::from_section(
-            // Accepts a `String` or any type that converts into a `String`, such as `&str`
-            "Balls: ",
-            TextStyle {
-                // This font is loaded and will be used instead of the default font.
-                // font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                font_size: 20.0,
-                ..default()
-            },
-        ) // Set the justification of the Text
-        .with_text_justify(JustifyText::Center)
-        // Set the style of the TextBundle itself.
-        .with_style(Style {
-            position_type: PositionType::Absolute,
-            top: Val::Px(20.0),
-            left: Val::Px(5.0),
-            ..default()
-        }),
-        TextBalls,
+        TextHud,
     ));
 }
 
-
-
-pub(crate) fn update_fps(
+pub(crate) fn update_hud(
+    mut query_text: Query<&mut Text, With<TextHud>>,
     diagnostics: Res<DiagnosticsStore>,
-    mut query_fps: Query<&mut Text, With<TextFps>>,
-    // number_spawned_balls: Option<Res<NumberSpawnedBalls>>,
-) {
-    for mut text in &mut query_fps {
-        if let Some(fps) = diagnostics.get(&FrameTimeDiagnosticsPlugin::FPS) {
-            if let Some(value) = fps.smoothed() {
-                info!("{:?}", text);
-                // Update the value of the second section
-                text.sections[0].value = format!("FPS: {value:.2}");
-            }
-        }
-    }
-
-    // for mut text in &mut query_balls {
-    //     text.sections[0].value = format!("Balls: {}", number_spawned_balls.0);
-    // }
-}
-
-use crate::world::balls::resources::NumberSpawnedBalls;
-
-pub(crate) fn update_balls(
-    mut query_fps: Query<&mut Text, With<TextBalls>>,
     number_spawned_balls: Res<NumberSpawnedBalls>,
+    physics_info: Res<PhysicsInfo>
 ) {
-    for mut text in &mut query_fps {
-        text.sections[0].value = format!("Balls: {}", number_spawned_balls.0);
+    if let Some(fps) = diagnostics.get(&FrameTimeDiagnosticsPlugin::FPS) {
+        if let Some(text_fps) = fps.smoothed() {
+            let mut text = query_text.single_mut();
+            let text_num_balls = number_spawned_balls.0;
+
+            text.sections[0].value = format!(
+                "FPS: {:.2}\nBalls: {}\nCol-Iter: {}\nPhysic-Time: {:.0}ms",
+                text_fps,
+                text_num_balls,
+                physics_info.iterations_collisions,
+                physics_info.execution_time
+            );
+        }
+
     }
+
+
+    // for mut text in &mut query_fps {
+    //     if let Some(fps) = diagnostics.get(&FrameTimeDiagnosticsPlugin::FPS) {
+    //         if let Some(value) = fps.smoothed() {
+    //             info!("{:?}", text);
+    //             // Update the value of the second section
+    //             text.sections[0].value = format!(
+    //                 "FPS: {value:.2}\nBalls: {value}"
+    //             );
+    //         }
+    //     }
+    // }
 
     // for mut text in &mut query_balls {
     //     text.sections[0].value = format!("Balls: {}", number_spawned_balls.0);
     // }
 }
-
-
-
-
-
 
 // use bevy::{
 //     prelude::*,

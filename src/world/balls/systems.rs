@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
-use rand::Rng;
-
-use super::resources::NumberSpawnedBalls;
-use super::components::Ball;
+use super::{
+    components::Ball,
+    resources::NumberSpawnedBalls,
+    super::MAX_BALLS_SPAWNING
+};
 
 pub(crate) fn spawn_ball(
     mut commands: Commands,
@@ -15,9 +16,8 @@ pub(crate) fn spawn_ball(
 ) {
     // Renderer takes care of position and size, therefore a blank ball
     // is spawned.
-    if number_spawned_balls.0 >= super::MAX_BALLS_SPAWNING { return }
+    if number_spawned_balls.0 >= MAX_BALLS_SPAWNING { return }
 
-    let mut rng = rand::thread_rng();
     commands.spawn(
         (
             MaterialMesh2dBundle {
@@ -30,17 +30,15 @@ pub(crate) fn spawn_ball(
                 material: materials.add(get_rainbow_color(time)),
                 ..default()
             },
-            // Ball::new(Some(rng.gen_range(0.02..0.05)))
-            Ball::new(Some(0.05))
+            Ball::new(Some(Ball::RADIUS))
         )
     );
 
     number_spawned_balls.0 += 1;
-    // info!("Balls spawned: {}", number_spawned_balls.0)
 }
 
 fn get_rainbow_color(time: Res<Time>) -> Color {
-    let t = time.elapsed_seconds() / 50.0;
+    let t = time.elapsed_seconds() / 5.0;
 
     let r = t.sin();
     let g = (t + 0.33 * 2.0 * std::f32::consts::PI).sin();

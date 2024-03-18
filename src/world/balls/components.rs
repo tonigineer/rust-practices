@@ -11,12 +11,12 @@ pub struct Ball {
 
 impl Ball {
     // Physics: SI unit
-    pub const DENSITY: f32 = 0.010;
-    pub const RADIUS: f32 = 0.005;
-    pub const VX_INIT: f32 = 4.0;
+    pub const DENSITY: f32 = 0.10;
+    pub const RADIUS: f32 = 0.0050;
+    pub const VX_INIT: f32 = 2.0;
     pub const VY_INIT: f32 = 0.0;
-    pub const X_INIT: f32 = 0.0;
-    pub const Y_INIT: f32 = 2.0;
+    pub const X_INIT: f32 = 0.1;
+    pub const Y_INIT: f32 = 1.75;
 
     pub fn new(radius: Option<f32>) -> Self {
         let radius = radius.unwrap_or(Self::RADIUS);

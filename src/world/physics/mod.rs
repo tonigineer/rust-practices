@@ -1,4 +1,5 @@
 pub mod components;
+pub mod resources;
 mod systems;
 
 use bevy::prelude::*;
@@ -13,6 +14,9 @@ pub struct PhysicsPlugin;
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app
+            .insert_resource(
+                resources::PhysicsInfo { iterations_collisions: 0, execution_time: 0 }
+            )
             .add_systems(
                 Update,
                 systems::integrate

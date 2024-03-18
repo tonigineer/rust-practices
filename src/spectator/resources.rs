@@ -1,4 +1,4 @@
-use bevy::prelude::{Resource};
+use bevy::prelude::Resource;
 
 #[derive(Debug, Resource)]
 pub struct GrabbedBall {
